@@ -140,3 +140,6 @@ Logs\ACE_Monitor_YYYYMMDD.log
 ## 许可证
 
 自定非商业许可证
+
+
+如果觉得有用，欢迎 ⭐ Star 支持！
