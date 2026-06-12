@@ -1,21 +1,25 @@
-MIT License
-
 Copyright (c) 2026 ACE-Monitor
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software (ACE Monitor App) and its source code, executable files, documentation, and related materials (collectively, "the Software") are subject to the following terms:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. **Permitted Use**  
+   Anyone is free to use, copy, modify, merge, publish, and distribute copies of the Software, but only for **non-commercial purposes**.  
+   Non-commercial purposes include, but are not limited to: personal learning, research, internal tool use, open source contributions, and any scenario that does not directly or indirectly generate revenue.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. **Commercial Use Prohibited**  
+   Without explicit written permission or a commercial license agreement, **any commercial use of the Software or its derivative works is strictly prohibited**.  
+   Commercial purposes include, but are not limited to:
+   - Selling or charging for the Software as part of a commercial product or service;
+   - Incorporating into a commercial product;
+   - Providing paid technical support or customization services based on the Software;
+   - Any other use intended for profit.
+
+3. **Commercial Licensing**  
+   To obtain a commercial license, please contact the copyright holder:  
+   **2820241167@qq.com**
+
+4. **Disclaimer**  
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+5. **Copyright Retention**  
+   All copies or substantial modifications of the Software must retain the above copyright notice, this license notice, and the disclaimer.
