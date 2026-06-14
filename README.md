@@ -1,145 +1,203 @@
 <div align="center">
 
-# 🛡️ ACE Monitor App
+# 🛡️ ACE-Monitor
 
-Windows 桌面版腾讯 ACE 进程监控限制工具
+**腾讯 ACE 进程监控限制工具 - Windows 桌面版**
 
-</div>
-
----
-
-## 简介
-
-ACE Monitor App 是原 PowerShell 脚本项目的桌面应用重构版。它会持续监控指定的 3 个腾讯 ACE 相关进程，并在发现后自动应用资源限制：
-
-- 将目标进程优先级设置为 `Idle`
-- 将目标进程 CPU 亲和性限制到单个 CPU 核心（核心 0）
-- 记录所有扫描与限制操作日志
-- 可通过界面开启/关闭监控
-- 可添加到 Windows 开机自启，并以最小化状态自动开始监控
-
-> ⚠️ 本程序需要管理员权限运行，否则可能无法修改进程优先级或 CPU 亲和性。
+*[English](./docs/README_EN.md) | 中文*
 
 ---
 
-## 当前版本重点
+## 📋 简介
 
-本版本以 WPF 桌面应用为基准，重点保留：只监控 3 个进程、开机自启、最小化启动、批处理一键发布 exe。
+ACE-Monitor 是一款用于监控并限制腾讯 ACE（Anti-Cheat Expert）反作弊系统进程的 **Windows 桌面应用程序**（WPF 技术）。
 
-| 模块 | 新版实现 |
-|---|---|
-| 启动/停止 | 在 UI 中点击“开始监控 / 停止” |
-| 优先级限制 | 默认启用，设置为 Idle |
-| 单核限制 | 默认启用，限制到 CPU 核心 0 |
-| 开机自启 | UI 勾选后创建 Windows 任务计划程序任务，登录后以 `--minimized --autostart` 启动 |
-| 日志 | `程序目录\Logs\ACE_Monitor_YYYYMMDD.log` |
-| 权限 | `app.manifest` 要求管理员权限 |
+腾讯 ACE 反作弊系统在被运行的游戏启动后，会在后台持续扫描文件，导致：
+- 磁盘持续高读写
+- 游戏帧率下降
+- 鼠标操作延迟
+- 固态硬盘寿命缩短
+
+本工具通过**降低进程优先级**和**限制 CPU 核心**的方式，在保证游戏正常运行的前提下，大幅减少 ACE 对系统资源的占用。
+
+> ⚠️ **本程序需要管理员权限运行**，否则无法修改进程优先级或 CPU 亲和性。
 
 ---
 
-## 监控的进程
+## ✨ 功能特性
+
+| 功能 | 说明 |
+|------|------|
+| 🖥️ **图形化界面** | 简单直观的 WPF 界面，一键启动/停止监控 |
+| 🔍 **自动检测** | 可自定义扫描间隔（默认 30 秒），自动发现 ACE 相关进程 |
+| ⚡ **优先级限制** | 将目标进程优先级设置为 `Idle`（最低优先级） |
+| 🎯 **CPU 亲和性限制** | 可选：将进程限制到单个 CPU 核心（核心 0） |
+| 🚀 **开机自启** | 通过界面勾选，自动创建 Windows 计划任务，支持最高权限自动启动 |
+| 📝 **日志记录** | 所有扫描与限制操作均记录到 `Logs` 目录，界面实时显示最近日志 |
+| 🔄 **持续监控** | 检测到目标进程后自动应用限制，无需人工干预 |
+| ⚙️ **灵活配置** | 可随时修改扫描间隔、开关优先级或 CPU 限制 |
+
+---
+
+## 📦 监控的进程
 
 - `SGuard64.exe`
 - `SGuardSvc64.exe`
 - `ACE-GuardClient.exe`
 
+> 本工具**仅监控上述 3 个 ACE 相关进程**，不会干扰其他系统进程或游戏主程序。
+
 ---
 
-## 项目结构
+## 🚀 快速开始
 
-```text
+### 方法一：使用预编译的安装程序（推荐普通用户）
+
+1. 从 [Releases](https://github.com/你的仓库地址/releases) 页面下载最新版本的 `ACE-Monitor-Setup.exe`
+2. 右键安装程序 → **以管理员身份运行**，按照提示完成安装
+3. 安装完成后，从开始菜单或桌面快捷方式启动 ACE-Monitor
+4. **首次启动请务必右键 → 以管理员身份运行**
+5. 在界面中点击“开始监控”，并根据需要勾选“开机自启”
+
+### 方法二：从源码编译运行（适合开发者）
+
+#### 环境要求
+- Windows 10 / Windows 11
+- [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+
+#### 编译与运行
+```bash
+# 克隆仓库
+git clone https://github.com/你的用户名/ACE-Monitor-App.git
+cd ACE-Monitor-App
+
+# 编译项目
+dotnet build src/ACE.Monitor.App/ACE.Monitor.App.csproj -c Release
+
+# 以管理员身份运行生成的可执行文件
+# 文件位置：src/ACE.Monitor.App/bin/Release/net8.0-windows/ACE-Monitor.exe
+```
+
+#### 一键发布独立 EXE
+
+双击项目根目录下的 `build-release.bat`，会在 `publish\win-x64` 生成单文件 `ACE-Monitor.exe`（自包含，无需安装 .NET 运行时）。
+
+------
+
+## 🖥️ 使用说明
+
+### 界面布局
+
+- **控制中心**：设置扫描间隔（秒）、开关优先级限制、开关 CPU 限制、开机自启
+- **状态指示**：显示当前监控状态（运行中/未运行）
+- **统计卡片**：显示本轮发现的进程数量、最后扫描时间、当前生效的限制策略
+- **运行日志**：实时显示监控操作和错误信息
+
+### 基本操作
+
+1. **开始监控**：点击“开始监控”按钮，程序将按设定间隔循环扫描并限制目标进程
+2. **停止监控**：点击“停止”按钮，监控循环结束
+3. **开机自启**：勾选“开机自启”后，程序会自动创建 Windows 计划任务（需要管理员权限）。下次登录系统时，程序将以最小化状态自动启动并开始监控。
+
+> 提示：开机自启功能使用 Windows 任务计划程序实现，需要**以管理员身份运行过一次程序**才能创建成功。
+
+### 命令行参数（高级）
+
+程序支持以下启动参数：
+
+- `--minimized`：启动后最小化到任务栏
+- `--autostart`：启动后自动开始监控（与 `--minimized` 配合用于开机自启）
+
+计划任务中默认添加了 `--minimized --autostart`，实现开机后无感自动监控。
+
+------
+
+## 📂 项目结构
+
+text
+
+```
 ACE-Monitor-App/
-├── ACE-Monitor-App.sln
-├── build-release.bat
-├── README.md
-├── LICENSE
-├── .gitignore
+├── README.md                    # 中文说明
+├── LICENSE                      # 许可证
+├── .gitignore                   # Git 忽略文件
+├── ACE-Monitor-App.sln          # 解决方案文件
+├── build-release.bat            # 一键发布脚本
+├── docs/
+│   └── README_EN.md             # 英文文档（可选）
 └── src/
     └── ACE.Monitor.App/
         ├── ACE.Monitor.App.csproj
-        ├── app.manifest
-        ├── App.xaml
-        ├── MainWindow.xaml
-        ├── MainWindow.xaml.cs
-        ├── Models/
-        │   ├── MonitorSettings.cs
-        │   └── ProcessLimitResult.cs
-        └── Services/
-            ├── Logger.cs
-            ├── MonitorService.cs
-            ├── ProcessLimiter.cs
-            └── StartupTaskService.cs
+        ├── app.manifest         # 管理员权限清单
+        ├── App.xaml / .cs        # 应用入口
+        ├── MainWindow.xaml / .cs # 主窗口逻辑
+        ├── Models/               # 数据模型
+        └── Services/             # 核心服务（日志、监控、进程限制、开机自启）
 ```
 
----
 
-## 编译运行
 
-### 环境要求
+------
 
-- Windows 10 / Windows 11
-- .NET 8 SDK
+## ❓ 常见问题
 
-### 编译发布
+### Q: 程序无法修改进程优先级，提示权限不足？
 
-双击运行：
+**A:** 请务必**以管理员身份运行**本程序。你可以右键 `ACE-Monitor.exe` → “以管理员身份运行”，或在程序属性中勾选“始终以管理员身份运行”。
 
-```bat
-build-release.bat
-```
+### Q: 开机自启勾选后无效？
 
-或手动执行：
+**A:**
 
-```powershell
-dotnet publish src\ACE.Monitor.App\ACE.Monitor.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish\win-x64
-```
+- 请确认你**以管理员身份运行过一次程序**，否则无法创建计划任务。
+- 打开“任务计划程序”，查看是否存在名为 `ACE-Monitor-App` 的任务。如果不存在或创建失败，程序日志会提示错误信息。
+- 若任务存在但未自动启动，请检查任务触发条件是否设置为“登录时”。
 
-生成文件：
+### Q: 会不会导致游戏被封号？
 
-```text
-publish\win-x64\ACE-Monitor.exe
-```
+**A:** 绝对不会。本工具仅通过 Windows 系统 API 降低进程优先级和限制 CPU 核心，不修改游戏文件，不注入代码，不干扰反作弊系统正常工作。所有操作均在系统层面完成，符合 Windows 资源管理规范。
 
-右键该文件，选择“以管理员身份运行”。
+### Q: 程序日志在哪里查看？
 
----
+**A:** 日志文件位于程序运行目录下的 `Logs\ACE_Monitor_YYYYMMDD.log`。界面内也提供“打开日志目录”按钮，可直接跳转。
 
-## 开机自启说明
+### Q: 如何彻底卸载？
 
-界面中勾选“开机自启”后，程序会创建名为 `ACE-Monitor-App` 的 Windows 任务计划程序任务：
+**A:**
 
-- 触发器：用户登录时
-- 权限：最高权限运行
-- 动作：启动当前 ACE-Monitor.exe
+- 如果使用了开机自启，请先在程序界面**取消勾选“开机自启”**（程序会自动删除计划任务）。
+- 然后直接删除程序所在文件夹即可（建议同时删除 `Logs` 目录）。
 
-取消勾选会删除该任务。任务启动命令包含 `--minimized --autostart`，因此登录后会最小化并自动开始监控。
+------
 
----
+## ⚠️ 免责声明
 
-## 日志
+1. 本工具仅用于个人系统资源管理，不针对任何特定游戏或厂商。
+2. 使用本工具需自行承担风险。作者不对任何因使用本工具导致的游戏异常、系统问题或账户处罚负责。
+3. 本工具不会修改游戏文件，也不会注入任何反作弊进程。
+4. 禁止将本工具用于商业或恶意目的。
 
-日志目录位于程序运行目录下：
+------
 
-```text
-Logs\ACE_Monitor_YYYYMMDD.log
-```
+## 📝 更新日志
 
-界面中也会实时显示最近日志。
+详见 [CHANGELOG.md](https://./docs/CHANGELOG.md)（如有）
 
----
+------
 
-## 免责声明
+## 📜 许可证
 
-1. 本工具仅用于个人系统资源管理。
-2. 使用本工具需自行承担风险。
-3. 本工具不会修改游戏文件，也不会注入游戏或反作弊进程。
-4. 作者不对任何因此工具产生的后果负责。
+本项目采用 **自定非商业许可证**。
+允许个人免费使用、修改源码，但**禁止用于商业目的**。
+详见 [LICENSE](https://./LICENSE) 文件。
 
----
+------
 
-## 许可证
-
-自定非商业许可证
-
+## 🙏 致谢
 
 如果觉得有用，欢迎 ⭐ Star 支持！
+
+------
+
+<div align="center">
+*Created with ❤️*

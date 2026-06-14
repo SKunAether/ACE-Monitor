@@ -25,10 +25,13 @@ public sealed class MonitorService
         if (IsRunning) return;
 
         _cts = new CancellationTokenSource();
-        _logger.Info($"ACE Monitor App 启动。间隔={settings.IntervalSeconds}s，CPU单核限制={settings.EnableCpuLimit}，优先级限制={settings.EnablePriorityLimit}");
+        _logger.Info($"ACE Monitor App 启动。初始间隔={settings.IntervalSeconds}s，CPU单核限制={settings.EnableCpuLimit}，优先级限制={settings.EnablePriorityLimit}");
 
         _ = Task.Run(async () =>
         {
+            int dynamicInterval = settings.IntervalSeconds;
+            int consecutiveMisses = 0;
+
             while (!_cts.Token.IsCancellationRequested)
             {
                 try
@@ -40,7 +43,18 @@ public sealed class MonitorService
 
                     if (results.Count == 0)
                     {
-                        _logger.Info("本轮未发现目标 ACE 进程");
+                        // 未发现进程 → 逐渐增加间隔
+                        consecutiveMisses++;
+                        int extraWait = (consecutiveMisses / 3) * 10;
+                        dynamicInterval = Math.Min(120, settings.IntervalSeconds + extraWait);
+                        _logger.Info($"本轮未发现目标 ACE 进程。下次扫描间隔调整为 {dynamicInterval} 秒。");
+                    }
+                    else
+                    {
+                        // 发现进程 → 重置未命中计数，缩短间隔进行严盯
+                        consecutiveMisses = 0;
+                        dynamicInterval = Math.Max(5, settings.IntervalSeconds / 2);
+                        _logger.Info($"本次发现 {results.Count} 个目标进程，下次扫描间隔缩短至 {dynamicInterval} 秒。");
                     }
                 }
                 catch (Exception ex)
@@ -50,7 +64,7 @@ public sealed class MonitorService
 
                 try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(Math.Max(5, settings.IntervalSeconds)), _cts.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(dynamicInterval), _cts.Token);
                 }
                 catch (TaskCanceledException) { }
             }

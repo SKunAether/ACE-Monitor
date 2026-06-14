@@ -31,6 +31,7 @@ public sealed class StartupTaskService
     public bool Enable()
     {
         var exe = Environment.ProcessPath ?? Path.Combine(AppContext.BaseDirectory, "ACE-Monitor.exe");
+        // 直接启动 exe，无需 cmd 过渡，避免弹出黑色窗口
         var args = $"/Create /F /TN \"{TaskName}\" /SC ONLOGON /RL HIGHEST /TR \"\\\"{exe}\\\" --minimized --autostart\"";
         return RunSchtasks(args, "已添加开机自启任务（最高权限）");
     }

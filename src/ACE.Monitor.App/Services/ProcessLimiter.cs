@@ -6,6 +6,7 @@ namespace ACE.Monitor.App.Services;
 public sealed class ProcessLimiter
 {
     private readonly Logger _logger;
+    private readonly HashSet<int> _limitedPids = new();
 
     public ProcessLimiter(Logger logger)
     {
@@ -30,6 +31,13 @@ public sealed class ProcessLimiter
 
             foreach (var process in processes)
             {
+                // 如果已经限制过，直接跳过
+                if (_limitedPids.Contains(process.Id))
+                {
+                    process.Dispose();
+                    continue;
+                }
+
                 var priorityApplied = false;
                 var cpuApplied = false;
                 string? error = null;
@@ -50,6 +58,7 @@ public sealed class ProcessLimiter
 
                     if (priorityApplied || cpuApplied)
                     {
+                        _limitedPids.Add(process.Id);
                         _logger.Info($"已限制 {process.ProcessName}.exe PID:{process.Id} Priority={(settings.EnablePriorityLimit ? "Idle" : "未启用")} CPU核心=0");
                     }
                 }

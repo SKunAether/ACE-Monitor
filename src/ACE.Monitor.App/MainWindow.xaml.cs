@@ -12,10 +12,12 @@ public partial class MainWindow : Window
     private readonly MonitorService _monitor;
     private readonly StartupTaskService _startup;
     private bool _loadingStartupState = true;
+    private readonly bool _autoStart;
 
-    public MainWindow()
+    public MainWindow(bool autoStart = false)
     {
         InitializeComponent();
+        _autoStart = autoStart;
         _monitor = new MonitorService(new ProcessLimiter(_logger), _logger);
         _startup = new StartupTaskService(_logger);
 
@@ -34,14 +36,13 @@ public partial class MainWindow : Window
         StartupCheck.IsChecked = _startup.IsEnabled();
         _loadingStartupState = false;
 
-        var args = Environment.GetCommandLineArgs();
-        if (args.Any(a => a.Equals("--minimized", StringComparison.OrdinalIgnoreCase)))
-        {
-            WindowState = WindowState.Minimized;
-            ShowInTaskbar = true;
-        }
+        // 窗口加载完成后，若需要自动启动则开始监控（此时控件已就绪）
+        Loaded += MainWindow_Loaded;
+    }
 
-        if (args.Any(a => a.Equals("--autostart", StringComparison.OrdinalIgnoreCase)))
+    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (_autoStart)
         {
             StartMonitor();
         }
