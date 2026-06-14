@@ -1,3 +1,5 @@
+
+
 <div align="center">
 
 # 🛡️ ACE-Monitor
@@ -5,6 +7,10 @@
 **ACE Process Monitor & Limiter – Windows Desktop App**
 
 *English | [中文](../README.md)*
+
+</div>
+
+---
 
 ## 📋 Introduction
 
@@ -200,3 +206,5 @@ If you find this tool useful, please ⭐ Star the repository!
 <div align="center">
 
 *Created with ❤️*
+
+</div> ```
